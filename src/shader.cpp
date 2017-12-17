@@ -57,6 +57,32 @@ const char* fragment_shader_text = R"glsl(
     }
 )glsl";
 
+GLuint createShaderProgram(const char* vertexSource, const char* fragmentSource)
+{
+    GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShaderId, 1, &vertexSource, NULL);
+    glCompileShader(vertexShaderId);
+    checkShader(vertexShaderId, "vertex"); 
+
+    GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShaderId, 1, &fragmentSource, NULL);
+    glCompileShader(fragmentShaderId);
+    checkShader(fragmentShaderId, "fragment"); 
+
+    // generate the shader program
+    GLuint shaderProgramId = glCreateProgram();
+    glAttachShader(shaderProgramId, vertexShaderId);
+    glAttachShader(shaderProgramId, fragmentShaderId);
+    glLinkProgram(shaderProgramId);
+
+    // program is linked
+    // individual shaders are not needed
+    glDeleteShader(vertexShaderId);
+    glDeleteShader(fragmentShaderId);
+
+    return shaderProgramId;
+}
+
 void checkShader(GLuint shaderId, std::string msg ="")
 {
     int success;

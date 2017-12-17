@@ -84,69 +84,62 @@ int main()
         1, 2, 3,
     };
 
-    // generate the vertex shader
+    // generate the shader
+    GLuint shaderProgramId = createShaderProgram(vertex_shader_text, fragment_shader_text);
 
-    GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShaderId, 1, &vertex_shader_text, NULL);
-    glCompileShader(vertexShaderId);
-    checkShader(vertexShaderId, "vertex"); 
-
-    GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShaderId, 1, &fragment_shader_text, NULL);
-    glCompileShader(fragmentShaderId);
-    checkShader(fragmentShaderId, "fragment"); 
-
-    // generate the shader program
-    GLuint shaderProgramId = glCreateProgram();
-    glAttachShader(shaderProgramId, vertexShaderId);
-    glAttachShader(shaderProgramId, fragmentShaderId);
-    glLinkProgram(shaderProgramId);
-
-    // program is linked
-    // individual shaders are not needed
-    glDeleteShader(vertexShaderId);
-    glDeleteShader(fragmentShaderId);
-
-
-    // vertex array object contains the buffers
+    // vertex array object (VAO) contains buffers and attribute pointers
+    // create new VAO and store pointer
+    // bind the VAO
     GLuint vertexArrayId;
-    // store the vertex array id of one new array
     glGenVertexArrays(1, &vertexArrayId);
-    // set the current vertex array
     glBindVertexArray(vertexArrayId);
 
-    // vertex buffer objects
+    // vertex buffer object (VBO) store buffered data
+    // create new VBO and store pointer
+    // bind the VBO
+    // load in the triangle points into the VBO
     GLuint vertexBufferId;
     glGenBuffers(1, &vertexBufferId);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
-    //load in the triangle points into the vertex buffer
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // define schema to read buffer
-    // use the stride because they are processed with layout
+    // vertex attrib pointers define how to read buffer
+    // define (location=0)
+    // stores the points
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    // vertex attrib pointers define how to read buffer
+    // define (location=1)
+    // stores the colors
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // element buffers
+    // element buffer object (EBO) stores indices
+    // create new EBO and store pointer
+    // bind the EBO
+    // load in the indices into the EBO
     GLuint elementBufferId;
     glGenBuffers(1, &elementBufferId);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferId);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-
+    // keep the VBOs and EBO bound
+    // unbind the VAO
     glBindVertexArray(0);
 
+    // define reusable transformation matrix
+    // stores camera information
     glm::mat4 trans;
 
+    // main rendering and input loop
     while (!glfwWindowShouldClose(window))
     {
+        // clear the screen
         glClearColor(0.2f, 0.3f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // rendering stuff
-        
         double time = glfwGetTime();
         float timeValue = sin(time) / 2.0f + 0.5f;
         int timeValueUniformId = glGetUniformLocation(shaderProgramId, "timeValue");
@@ -155,27 +148,32 @@ int main()
         trans = glm::rotate(trans, glm::radians(rotationValue), glm::vec3(0.0f, 0.0f, 1.0f));
         int transformUniformId = glGetUniformLocation(shaderProgramId, "transform");
 
-        glUseProgram(shaderProgramId);
+        // rendering the objects
+        // activate shader program
         // update uniforms
+        // bind VAO
+        glUseProgram(shaderProgramId);
         glUniform1f(timeValueUniformId, timeValue);
         glUniformMatrix4fv(transformUniformId, 1, GL_FALSE, glm::value_ptr(trans));
         glBindVertexArray(vertexArrayId);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+        // unbind VAO
+        // deactivate shader program
         glBindVertexArray(0);
         glUseProgram(0);
 
         // windowing stuff
-
-        glfwSwapBuffers(window);
-
+        // swap the buffers to prevent screen tearing
         // Make sure to poll events after the frame buffer swap
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
+    // destroy the window
+    // close the glfw context
     glfwDestroyWindow(window);
-
     glfwTerminate();
 
     return 0;
