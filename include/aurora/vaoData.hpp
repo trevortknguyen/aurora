@@ -3,6 +3,8 @@
 
 #include<glad/glad.h>
 
+GLuint getGraphVertexArray();
+GLuint getPointsVertexArray();
 GLuint getSquareVertexArray();
 
 #endif

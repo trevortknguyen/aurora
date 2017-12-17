@@ -2,14 +2,82 @@
 
 const char* pointsVertexShaderSource = R"glsl(
     #version 450 core
+    layout (location = 0) in vec3 position;
+
+    uniform mat4 transform; 
+
+    out vec3 color;
+
+    void main()
+    {
+        gl_Position = transform * vec4(position, 1.0);
+        color = vec3(position.x, (1-position.x), 0.0);
+    }
 )glsl";
 
 const char* pointsGeometryShaderSource = R"glsl(
     #version 450 core
+    
+    layout (points) in;
+    layout (triangle_strip, max_vertices = 8) out;
+
+    uniform mat4 transform;
+    out vec3 color;
+    
+    float i = 0;
+
+    void main()
+    {
+        vec4 offset = transform*vec4(0.0, 0.0, 0.0, 0.0);
+        gl_Position = gl_in[0].gl_Position + offset;
+        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        EmitVertex();
+        i += 0.20;
+
+        offset = transform*vec4(-0.01, 0.01, 0.0, 0.0);
+        gl_Position = gl_in[0].gl_Position + offset;
+        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        EmitVertex();
+        i += 0.20;
+
+        offset = transform*vec4(0.01, 0.01, 0.0, 0.0);
+        gl_Position = gl_in[0].gl_Position + offset;
+        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        EmitVertex();
+        i += 0.20;
+        EndPrimitive();
+        
+        offset = transform*vec4(0.0, 0.0, 0.0, 0.0);
+        gl_Position = gl_in[0].gl_Position + offset;
+        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        EmitVertex();
+        i += 0.20;
+
+        offset = transform*vec4(-0.01, -0.01, -0.01, 0.0);
+        gl_Position = gl_in[0].gl_Position + offset;
+        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        EmitVertex();
+        i += 0.20;
+
+        offset = transform*vec4(0.01, -0.01, -0.01, 0.0);
+        gl_Position = gl_in[0].gl_Position + offset;
+        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        EmitVertex();
+        EndPrimitive();
+
+    }
 )glsl";
 
 const char* pointsFragmentShaderSource = R"glsl(
     #version 450 core
+    
+    in vec3 color;
+    out vec4 fragColor; 
+    
+    void main()
+    {
+        fragColor = vec4(color, 1.0);
+    }
 )glsl";
 
 // vertex shader source code

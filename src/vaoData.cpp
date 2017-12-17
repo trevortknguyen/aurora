@@ -1,13 +1,40 @@
 #include <glad/glad.h>
 #include <aurora/vaoData.hpp> 
+#include <cmath>
+
+GLuint getGraphVertexArray()
+{
+    float graph[2000][3];
+
+    for (int i = 0; i < 2000; i++) {
+        float t = (i-1000.0) / 100.0;
+        graph[i][0] = 0.1 * cos(t * 10.0); 
+        graph[i][1] = 0.1 * sin(t * 10.0);
+        graph[i][2] = 0.1*t;
+    }
+
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(graph), graph, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+    return vao;
+}
 
 GLuint getPointsVertexArray()
 {
-    const GLfloat vertices[] = {
-        0.5f, 0.5f, 0.5f,
+    float vertices[3][3] = {
         0.5f, 0.0f, 0.0f,
         0.0f, 0.5f, 0.0f,
-        0.0f, 0.0f, 0.5f,
+        0.0f, 0.0f, 0.0f,
     };
 
     GLuint vao;
@@ -19,8 +46,8 @@ GLuint getPointsVertexArray()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(0);
 
     glBindVertexArray(0);
     return vao;
