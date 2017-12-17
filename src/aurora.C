@@ -3,6 +3,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
@@ -87,10 +91,11 @@ int main()
         "\n"
         "out vec3 color;\n"
         "uniform float timeValue;\n"
+        "uniform mat4 transform;\n"
         "\n"
         "void main()\n"
         "{\n"
-        "    gl_Position = vec4(aPos.xyz, 1.0);\n"
+        "    gl_Position = transform*vec4(aPos.xyz, 1.0);\n"
         "    color = vec3(timeValue*c.x+(1-timeValue)*c.y,(1-timeValue)*c.x+timeValue*c.y,0.6*timeValue*c.x+0.2*(1-c.y));\n"
         "}\n";
 
@@ -172,6 +177,8 @@ int main()
 
     glBindVertexArray(0);
 
+    glm::mat4 trans;
+
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.2f, 0.3f, 0.5f, 1.0f);
@@ -183,9 +190,14 @@ int main()
         float timeValue = sin(time) / 2.0f + 0.5f;
         int timeValueUniformId = glGetUniformLocation(shaderProgramId, "timeValue");
 
+        float rotationValue = timeValue;
+        trans = glm::rotate(trans, glm::radians(rotationValue), glm::vec3(0.0f, 0.0f, 1.0f));
+        int transformUniformId = glGetUniformLocation(shaderProgramId, "transform");
+
         glUseProgram(shaderProgramId);
         // update uniforms
         glUniform1f(timeValueUniformId, timeValue);
+        glUniformMatrix4fv(transformUniformId, 1, GL_FALSE, glm::value_ptr(trans));
         glBindVertexArray(vertexArrayId);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
