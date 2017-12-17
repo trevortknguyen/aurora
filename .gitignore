@@ -1,3 +1,6 @@
+# operating system
+*.swp
+
 # CMake generated files 
 CMakeCache.txt
 CMakeFiles/
