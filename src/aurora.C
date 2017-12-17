@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -54,6 +55,7 @@ int main()
     int width, height;
     // gets the dimensions and inserts them into the integer pointers
     glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0, width, height);
 
 
     // prevents screen tearing
@@ -64,10 +66,10 @@ int main()
     
     // create 3D points for triangle
     static const GLfloat vertices[] = {
-        0.5f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,0.0f, 0.0f, 1.0f,
+        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
     };
 
     // create the indices of each triangle
@@ -81,13 +83,15 @@ int main()
     const char* vertex_shader_text =
         "#version 450 core\n"
         "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 1) in vec3 c;\n"
         "\n"
-        "out vec4 vertexColor;\n"
+        "out vec3 color;\n"
+        "uniform float timeValue;\n"
         "\n"
         "void main()\n"
         "{\n"
         "    gl_Position = vec4(aPos.xyz, 1.0);\n"
-        "    vertexColor = vec4(0.2*aPos.x + 0.8*aPos.y, 0.3*aPos.y+0.7*aPos.x, 0.5-0.5*aPos.x, 1.0);\n"
+        "    color = vec3(timeValue*c.x+(1-timeValue)*c.y,(1-timeValue)*c.x+timeValue*c.y,0.6*timeValue*c.x+0.2*(1-c.y));\n"
         "}\n";
 
     GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
@@ -112,12 +116,11 @@ int main()
         "#version 450 core\n"
         "out vec4 fragColor;\n"
         "\n"
-        "in vec4 vertexColor;\n"
+        "in vec3 color;\n"
         "\n"
         "void main()\n"
         "{\n"
-        //"    fragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "    fragColor = vertexColor;\n"
+        "    fragColor = vec4(color.rgb, 1.0f);\n"
         "}\n";
 
     GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
@@ -155,8 +158,10 @@ int main()
 
     // define schema to read buffer
     // use the stride because they are processed with layout
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // element buffers
     GLuint elementBufferId;
@@ -169,14 +174,18 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-        double time = glfwGetTime();
-        //std::cout << "Time: " << time << ".\n";
+        glClearColor(0.2f, 0.3f, 0.5f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         // rendering stuff
         
-        glViewport(0, 0, width, height);
+        double time = glfwGetTime();
+        float timeValue = sin(time) / 2.0f + 0.5f;
+        int timeValueUniformId = glGetUniformLocation(shaderProgramId, "timeValue");
 
         glUseProgram(shaderProgramId);
+        // update uniforms
+        glUniform1f(timeValueUniformId, timeValue);
         glBindVertexArray(vertexArrayId);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
