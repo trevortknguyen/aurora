@@ -84,20 +84,26 @@ int main()
 
     // generate the vertex shader
 
-    const char* vertex_shader_text =
-        "#version 450 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "layout (location = 1) in vec3 c;\n"
-        "\n"
-        "out vec3 color;\n"
-        "uniform float timeValue;\n"
-        "uniform mat4 transform;\n"
-        "\n"
-        "void main()\n"
-        "{\n"
-        "    gl_Position = transform*vec4(aPos.xyz, 1.0);\n"
-        "    color = vec3(timeValue*c.x+(1-timeValue)*c.y,(1-timeValue)*c.x+timeValue*c.y,0.6*timeValue*c.x+0.2*(1-c.y));\n"
-        "}\n";
+    const char* vertex_shader_text = R"glsl(
+        #version 450 core
+        layout (location = 0) in vec3 aPos;
+        layout (location = 1) in vec3 c;
+        
+        out vec3 color;
+        uniform float timeValue;
+        uniform mat4 transform;
+        
+        void main()
+        {
+            gl_Position = transform*vec4(aPos.xyz, 1.0);
+            if (timeValue > 0.5)
+            {
+                color = vec3(timeValue*c.x+(1-timeValue)*c.y,(1-timeValue)*c.x+timeValue*c.y,0.6*timeValue*c.x+0.2*(1-c.y));
+            } else {
+                color = vec3(timeValue*gl_Position.x+(1-timeValue)*c.x,(1-timeValue)*gl_Position.y+timeValue*c.y, 0.6*timeValue+0.2*(1-aPos.y));
+            }
+        }
+    )glsl";
 
     GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShaderId, 1, &vertex_shader_text, NULL);
@@ -117,16 +123,17 @@ int main()
 
 
     // generate the fragment shader
-    const char* fragment_shader_text =
-        "#version 450 core\n"
-        "out vec4 fragColor;\n"
-        "\n"
-        "in vec3 color;\n"
-        "\n"
-        "void main()\n"
-        "{\n"
-        "    fragColor = vec4(color.rgb, 1.0f);\n"
-        "}\n";
+    const char* fragment_shader_text = R"glsl(
+        #version 450 core
+        out vec4 fragColor;
+    
+        in vec3 color;
+    
+        void main()
+        {
+            fragColor = vec4(color.rgb, 1.0f);
+        }
+    )glsl";
 
     GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShaderId, 1, &fragment_shader_text, NULL);
