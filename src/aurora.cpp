@@ -9,7 +9,7 @@
 
 #include <aurora/shader.hpp>
 #include <aurora/shaderSources.hpp>
-#include <aurora/squareVao.hpp>
+#include <aurora/vaoData.hpp>
 
 void error_callback(int error, const char* description)
 {

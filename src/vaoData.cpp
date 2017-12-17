@@ -1,23 +1,48 @@
 #include <glad/glad.h>
-#include <aurora/squareVao.hpp> 
+#include <aurora/vaoData.hpp> 
 
-// generating the triangle
-// create 3D points for triangle
-static const GLfloat vertices[] = {
-    0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-    0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-    -0.5f, -0.5f, 0.0f,0.0f, 0.0f, 1.0f,
-    -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
-};
+GLuint getPointsVertexArray()
+{
+    const GLfloat vertices[] = {
+        0.5f, 0.5f, 0.5f,
+        0.5f, 0.0f, 0.0f,
+        0.0f, 0.5f, 0.0f,
+        0.0f, 0.0f, 0.5f,
+    };
 
-// create the indices of each triangle
-static const GLuint indices[] = {
-    0, 1, 3,
-    1, 2, 3,
-};
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
+    return vao;
+}
 
 GLuint getSquareVertexArray()
 {
+    // generating the triangle
+    // create 3D points for triangle
+    const GLfloat vertices[] = {
+        0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,0.0f, 0.0f, 1.0f,
+        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
+    };
+
+    // create the indices of each triangle
+    const GLuint indices[] = {
+        0, 1, 3,
+        1, 2, 3,
+    };
+
     // vertex array object (VAO) contains buffers and attribute pointers
     // create new VAO and store pointer
     // bind the VAO
@@ -61,3 +86,4 @@ GLuint getSquareVertexArray()
 
     return vertexArrayId;
 }
+

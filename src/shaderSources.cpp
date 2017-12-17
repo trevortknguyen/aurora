@@ -1,15 +1,15 @@
 #include <aurora/shaderSources.hpp>
 
 const char* pointsVertexShaderSource = R"glsl(
-
+    #version 450 core
 )glsl";
 
 const char* pointsGeometryShaderSource = R"glsl(
-
+    #version 450 core
 )glsl";
 
 const char* pointsFragmentShaderSource = R"glsl(
-
+    #version 450 core
 )glsl";
 
 // vertex shader source code

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 # project name is set to aurora
 project(aurora)
 
-set(aurora_SRCS src/aurora.cpp src/shader.cpp src/shaderSources.cpp src/squareVao.cpp src/glad.c)
+set(aurora_SRCS src/aurora.cpp src/shader.cpp src/shaderSources.cpp src/vaoData.cpp src/glad.c)
 
 add_definitions(-std=c++11)
 
