@@ -17,10 +17,9 @@ void error_callback(int error, const char* description)
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        //glfwSetWindowShouldClose(window, GLFW_TRUE);
-        std::cout << "You can't escape. \n";
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
     if (key == GLFW_KEY_SPACE)
-        std::cout << "Hello. \n";
+        std::cout << "Space was pressed.\n";
 }
 
 int main()
@@ -33,6 +32,7 @@ int main()
         return 1;
     }
 
+    // set OpenGL to version 4.5
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 
