@@ -87,21 +87,40 @@ int main()
     const char* vertex_shader_text = R"glsl(
         #version 450 core
         layout (location = 0) in vec3 aPos;
-        layout (location = 1) in vec3 c;
+        layout (location = 1) in vec3 aCol;
         
         out vec3 color;
         uniform float timeValue;
         uniform mat4 transform;
+
+        vec3 genColor(in float t, in vec3 c, in vec3 p, in vec3 pt)
+        {
+            vec3 a;
+            vec3 b;
+            a = vec3(t*c.x+(1-t)*c.y,(1-t)*c.x+t*c.y,0.6*t*c.x+0.2*(1-c.y));
+            b = vec3(t*pt.x+(1-t)*c.x,(1-t)*pt.y+t*c.y, 0.6*t+0.2*(1-p.y));
+
+            if (t > 0.9)
+            {
+                if (int(t * 1000000) % 2 == 0)
+                {
+                    return a;
+                }
+                else
+                {
+                    return b;
+                }
+            }
+ 
+            vec3 color;
+            color = vec3(t*a.r+(1-t)*b.r, t*a.g+(1-t)*b.g, t*a.b+(1-t)*b.b);
+            return color;
+        }
         
         void main()
         {
             gl_Position = transform*vec4(aPos.xyz, 1.0);
-            if (timeValue > 0.5)
-            {
-                color = vec3(timeValue*c.x+(1-timeValue)*c.y,(1-timeValue)*c.x+timeValue*c.y,0.6*timeValue*c.x+0.2*(1-c.y));
-            } else {
-                color = vec3(timeValue*gl_Position.x+(1-timeValue)*c.x,(1-timeValue)*gl_Position.y+timeValue*c.y, 0.6*timeValue+0.2*(1-aPos.y));
-            }
+            color = genColor(timeValue, aCol, aPos, gl_Position.xyz);
         }
     )glsl";
 
@@ -153,6 +172,7 @@ int main()
     // individual shaders are not needed
     glDeleteShader(vertexShaderId);
     glDeleteShader(fragmentShaderId);
+
 
     // vertex array object contains the buffers
     GLuint vertexArrayId;
