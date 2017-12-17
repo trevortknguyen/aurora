@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <aurora/shader.hpp>
+#include <aurora/shaderSources.hpp>
 #include <aurora/squareVao.hpp>
 
 void error_callback(int error, const char* description)
@@ -68,13 +69,16 @@ int main()
     // prevents screen tearing
     glfwSwapInterval(1);
    
+    // SETUP FOR THE SQUARE
     // generate the shader
     // located in shader.cpp
-    GLuint shaderProgramId = createShaderProgram(vertex_shader_text, fragment_shader_text);
-
+    GLuint squareShaderProgram= createShaderProgram(squaresVertexShaderSource, squaresFragmentShaderSource);
     // generate VAO for squares
     // located in squareVao.cpp
-    GLuint vertexArrayId = getSquareVertexArray();
+    GLuint squareVAO = getSquareVertexArray();
+
+    // SETUP FOR THE POINTS
+
 
     // define reusable transformation matrix
     // stores camera information
@@ -90,20 +94,23 @@ int main()
         // rendering stuff
         double time = glfwGetTime();
         float timeValue = sin(time) / 2.0f + 0.5f;
-        int timeValueUniformId = glGetUniformLocation(shaderProgramId, "timeValue");
-
         float rotationValue = timeValue;
         trans = glm::rotate(trans, glm::radians(rotationValue), glm::vec3(0.0f, 0.0f, 1.0f));
-        int transformUniformId = glGetUniformLocation(shaderProgramId, "transform");
 
+
+        // RENDERING THE SQUARE
+
+        // get uniform locations
+        int timeValueUniformId = glGetUniformLocation(squareShaderProgram, "timeValue");
+        int transformUniformId = glGetUniformLocation(squareShaderProgram, "transform");
         // rendering the objects
         // activate shader program
         // update uniforms
         // bind VAO
-        glUseProgram(shaderProgramId);
+        glUseProgram(squareShaderProgram);
         glUniform1f(timeValueUniformId, timeValue);
         glUniformMatrix4fv(transformUniformId, 1, GL_FALSE, glm::value_ptr(trans));
-        glBindVertexArray(vertexArrayId);
+        glBindVertexArray(squareVAO);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -111,6 +118,11 @@ int main()
         // deactivate shader program
         glBindVertexArray(0);
         glUseProgram(0);
+
+        // RENDERING THE POINTS
+
+
+
 
         // windowing stuff
         // swap the buffers to prevent screen tearing
