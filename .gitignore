@@ -2,6 +2,7 @@
 *.swp
 
 # CMake generated files 
+build/
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
