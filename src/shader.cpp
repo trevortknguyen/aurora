@@ -1,7 +1,8 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <string>
-#include <aurora/shader.hpp>
+
+#include "shader.h"
 
 GLuint createShaderProgram(const char* vertexSource, const char* fragmentSource)
 {

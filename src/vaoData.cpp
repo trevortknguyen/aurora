@@ -1,6 +1,7 @@
 #include <glad/glad.h>
-#include <aurora/vaoData.hpp> 
 #include <cmath>
+
+#include "vaoData.h"
 
 void updateParticles(GLuint vao, float rvalues [][3])
 {

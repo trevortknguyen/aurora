@@ -1,4 +1,4 @@
-#include <aurora/shaderSources.hpp>
+#include "shaderSources.h"
 
 const char* pointsVertexShaderSource = R"glsl(
     #version 450 core

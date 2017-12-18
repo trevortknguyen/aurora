@@ -1,5 +1,6 @@
 #include <cmath>
-#include <aurora/simulation.hpp>
+
+#include "simulation.h"
 
 const int NMAX = 2000;
 int nAtom = 100;

@@ -7,10 +7,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <aurora/shader.hpp>
-#include <aurora/shaderSources.hpp>
-#include <aurora/vaoData.hpp>
-#include <aurora/simulation.hpp>
+#include "shader.h"
+#include "shaderSources.h"
+#include "vaoData.h"
+#include "simulation.h"
 
 void error_callback(int error, const char* description)
 {
