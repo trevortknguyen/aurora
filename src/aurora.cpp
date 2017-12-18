@@ -79,14 +79,6 @@ int main()
 
     // prevents screen tearing
     glfwSwapInterval(1);
-   
-    // SETUP FOR THE SQUARE
-    // generate the shader
-    // located in shader.cpp
-    GLuint squareShaderProgram= createShaderProgram(squaresVertexShaderSource, squaresFragmentShaderSource);
-    // generate VAO for squares
-    // located in squareVao.cpp
-    GLuint squareVAO = getSquareVertexArray();
 
     // SETUP FOR THE POINTS
     GLuint pointsShaderProgram = createShaderProgram(pointsVertexShaderSource, pointsGeometryShaderSource, pointsFragmentShaderSource);
@@ -115,33 +107,10 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // rendering stuff
-        double time = glfwGetTime();
-        float timeValue = sin(time) / 2.0f + 0.5f;
-        float rotationValue = timeValue;
-
         model = glm::mat4(1.0f);
         view = glm::lookAt(eye, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
         projection = glm::perspective(45.0f, 1.0f * 640 / 480, 0.1f, 1000.0f);
         transform = projection * view * model;
-
-
-        // RENDERING THE SQUARE
-/*
-        // get uniform locations
-        int timeValueUniformId = glGetUniformLocation(squareShaderProgram, "timeValue");
-        int transformUniformId = glGetUniformLocation(squareShaderProgram, "transform");
-        // rendering the objects
-        // activate shader program
-        // update uniforms
-        // bind VAO
-        glUseProgram(squareShaderProgram);
-        glUniform1f(timeValueUniformId, timeValue);
-        glUniformMatrix4fv(transformUniformId, 1, GL_FALSE, glm::value_ptr(trans));
-        glBindVertexArray(squareVAO);
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-*/
 
         // RENDERING THE POINTS
 
