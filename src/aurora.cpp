@@ -98,7 +98,7 @@ int main()
     GLuint particlesVao = getParticlesVao(r);
     
 
-    glm::vec3 eye = glm::vec3(0.0, -2.0, 2.0);
+    glm::vec3 eye = glm::vec3(0.0, -2.0, 20.0);
 
     // define reusable transformation matrix
     // stores camera information
@@ -111,7 +111,8 @@ int main()
     while (!glfwWindowShouldClose(window))
     {
         // clear the screen
-        glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+        //glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // rendering stuff

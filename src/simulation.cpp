@@ -2,7 +2,7 @@
 #include <aurora/simulation.hpp>
 
 const int NMAX = 2000;
-int nAtom = 5;
+int nAtom = 100;
 
 // position
 float r [NMAX][3];
@@ -13,6 +13,15 @@ float ra[NMAX][3];
 
 void initializeR()
 {
+    for (int i = 0; i < nAtom; i++)
+    {
+        float t = i / 10.0f - 10.0f;
+        r[i][0] = 9.1f*cos(t);
+        r[i][1] = 9.1f*sin(t);
+        r[i][2] = t;
+    }
+
+
     r[0][0] = 0.9201f;
     r[0][1] = -0.4001f;
     r[0][2] = 0.0001f;
@@ -22,20 +31,12 @@ void initializeR()
     r[2][0] = 0.91f;
     r[2][1] = 0.91f;
     r[2][2] = 0.91f;
-
     r[3][0] = 0.91f;
     r[3][1] = -0.91f;
     r[3][2] = -0.91f;
-
-    /*
-    for (int i = 0; i < nAtom; i++)
-    {
-        float t = (i-nAtom/2) / nAtom * 10.0f;
-        r[i][0] = 0.1f*cos(t*10.0f);
-        r[i][1] = 0.1f*sin(t*10.0f);
-        r[i][2] = 0.1f*t;
-    }
-    */
+    r[4][0] = 0.01f;
+    r[4][1] = -0.01f;
+    r[4][2] = -0.01f;
 }
 
 
@@ -82,7 +83,7 @@ void doLJPotential()
 
 // Verlet Discretization
 
-double DeltaT {0.000001f};
+double DeltaT {0.0001f};
 
 void singleStep()
 {
@@ -107,7 +108,7 @@ void singleStep()
     }
 }
 
-unsigned int StepLimit {1000};
+unsigned int StepLimit {100};
 void velocityVerletDiscretization()
 {
     // initialize the stuff

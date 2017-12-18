@@ -24,47 +24,37 @@ const char* pointsGeometryShaderSource = R"glsl(
     uniform mat4 transform;
     out vec3 color;
     
-    float i = 0;
-
     void main()
     {
-        vec4 offset = transform*vec4(0.0, 0.0, 0.0, 0.0);
-        gl_Position = gl_in[0].gl_Position + offset;
-        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
-        EmitVertex();
-        i += 0.20;
+        vec4 pos = gl_in[0].gl_Position;        
+        float total = pos.x + pos.y + pos.z;
 
-        offset = transform*vec4(-0.01, 0.01, 0.0, 0.0);
-        gl_Position = gl_in[0].gl_Position + offset;
-        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        vec4 offset = vec4(0.0, 0.0, 0.0, 0.0);
+        gl_Position = pos + offset;
+        color = vec3(pos.x/total, pos.y/total, pos.z/total);
         EmitVertex();
-        i += 0.20;
 
-        offset = transform*vec4(0.01, 0.01, 0.0, 0.0);
-        gl_Position = gl_in[0].gl_Position + offset;
-        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        offset = vec4(-0.15, 0.15, 0.0, 0.0);
+        gl_Position = pos + offset;
         EmitVertex();
-        i += 0.20;
+
+        offset = vec4(0.15, 0.15, 0.0, 0.0);
+        gl_Position = pos + offset;
+        EmitVertex();
         EndPrimitive();
         
-        offset = transform*vec4(0.0, 0.0, 0.0, 0.0);
-        gl_Position = gl_in[0].gl_Position + offset;
-        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        offset = vec4(0.0, 0.0, 0.0, 0.0);
+        gl_Position = pos + offset;
         EmitVertex();
-        i += 0.20;
 
-        offset = transform*vec4(-0.01, -0.01, -0.01, 0.0);
-        gl_Position = gl_in[0].gl_Position + offset;
-        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        offset = vec4(-0.11, -0.11, -0.11, 0.0);
+        gl_Position = pos + offset;
         EmitVertex();
-        i += 0.20;
 
-        offset = transform*vec4(0.01, -0.01, -0.01, 0.0);
-        gl_Position = gl_in[0].gl_Position + offset;
-        color = vec3(i*1, (1-i)*1, (1-i)*0.5);
+        offset = vec4(0.11, -0.11, -0.11, 0.0);
+        gl_Position = pos + offset;
         EmitVertex();
         EndPrimitive();
-
     }
 )glsl";
 
