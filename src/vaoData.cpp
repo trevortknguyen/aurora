@@ -2,6 +2,35 @@
 #include <aurora/vaoData.hpp> 
 #include <cmath>
 
+void updateParticles(GLuint vao, float rvalues [][3])
+{
+    glBindVertexArray(vao);
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float)*2000*3, rvalues);
+
+    glBindVertexArray(0);
+}
+
+// need to find out how to fix that
+GLuint getParticlesVao(float rvalues [][3])
+{
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*2000*3, rvalues, GL_STREAM_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+    return vao;
+}
+
+
 GLuint getGraphVertexArray()
 {
     float graph[2000][3];

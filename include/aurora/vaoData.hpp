@@ -3,6 +3,9 @@
 
 #include<glad/glad.h>
 
+void updateParticles(GLuint vao, float r [][3]);
+GLuint getParticlesVao(float r [][3]);
+
 GLuint getGraphVertexArray();
 GLuint getPointsVertexArray();
 GLuint getSquareVertexArray();

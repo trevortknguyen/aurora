@@ -10,6 +10,7 @@
 #include <aurora/shader.hpp>
 #include <aurora/shaderSources.hpp>
 #include <aurora/vaoData.hpp>
+#include <aurora/simulation.hpp>
 
 void error_callback(int error, const char* description)
 {
@@ -92,7 +93,10 @@ int main()
     //GLuint pointsShaderProgram = createShaderProgram(pointsVertexShaderSource, pointsFragmentShaderSource);
     GLuint pointsVAO = getGraphVertexArray();
     //GLuint pointsVAO = getPointsVertexArray();
-
+    
+    initializeR();
+    GLuint particlesVao = getParticlesVao(r);
+    
 
     glm::vec3 eye = glm::vec3(0.0, -2.0, 2.0);
 
@@ -107,7 +111,7 @@ int main()
     while (!glfwWindowShouldClose(window))
     {
         // clear the screen
-        glClearColor(0.2f, 0.3f, 0.5f, 1.0f);
+        glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // rendering stuff
@@ -143,9 +147,10 @@ int main()
         GLuint transformUniform = glGetUniformLocation(pointsShaderProgram, "transform");
         glUseProgram(pointsShaderProgram);
         glUniformMatrix4fv(transformUniform, 1, GL_FALSE, glm::value_ptr(transform));
-        glBindVertexArray(pointsVAO);
+        //glBindVertexArray(pointsVAO);
+        glBindVertexArray(particlesVao);
 
-        glDrawArrays(GL_POINTS, 0, 2000);
+        glDrawArrays(GL_POINTS, 0, nAtom);
 
         // UNBIND EVERYTHING
         // unbind VAO
@@ -159,6 +164,9 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
 
+        velocityVerletDiscretization();
+        std::cout << "Time: " << glfwGetTime() << std::endl;
+        updateParticles(particlesVao, r);
 
         if (keys[GLFW_KEY_UP])
         {
