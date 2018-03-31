@@ -10,3 +10,7 @@ Makefile
 
 # executable
 /aurora
+
+# CLion CMake Build
+cmake-build-debug/
+.idea/
